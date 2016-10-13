@@ -1,12 +1,12 @@
 let uid = 0;
 
-export Dep = function Dep() {
+export function Dep() {
   this.is = ++uid;
-  this.subs = []
+  this.subs = [];
 }
 
 Dep.prototype.add = function() {
-  this.subs.push(Dep.targer);
+  this.subs.push(Dep.target);
 }
 
 Dep.prototype.remove = function(sub) {
@@ -23,3 +23,5 @@ Dep.prototype.notify = function() {
     this.subs[i].update();
   }
 }
+
+Dep.target = null;

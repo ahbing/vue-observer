@@ -3,15 +3,15 @@
  * observer 数组（遍历每个数组值，如果是复杂值继续 observer）
  * observer 对象， 对每个属性调用 definedReactive 方法
  */
-import * from './util';
+import {isObject, isPlainObject} from './util';
 import { Dep } from './dep';
 import { arrayMethods } from './array';
 
-export Observer = function(obj, options) {
+export function Observer(obj, options) {
   const dep = new Dep();
   this.dep = dep;
   this.value = obj;
-  Object.definedPrototy(obj, '__ob__', {
+  Object.defineProperty(obj, '__ob__', {
     value: this
   });
   if (Array.isArray(obj)) {
@@ -22,7 +22,7 @@ export Observer = function(obj, options) {
   }
 }
 
-Observer.prototype.walk(obj) {
+Observer.prototype.walk = function(obj) {
   let keys = Object.keys(obj);
   for (var i = 0, l = keys.length; i < l; i++) {
     defineReactive(obj, keys[i], obj[keys[i]]);
@@ -34,9 +34,9 @@ Observer.prototype.observerArray = function(arr) {
     observe(arr[i]);
   }
 }
-export observe = function(val) {
+export function observe(val) {
   if (!isObject(val)) return;
-  if (val.hasOwnProperty(__ob__) && __ob__ instanceof Observer) return val.__ob__;
+  if (val.hasOwnProperty('__ob__') && val.__ob__ instanceof Observer) return val.__ob__;
   let ob;
   if (Array.isArray(val) || isPlainObject(val) && Object.isExtensible(val)) {
     ob = new Observer(val);
@@ -57,7 +57,7 @@ export function defineReactive(obj, key, val) {
   const getter = desc && desc.get;
   const setter = desc && desc.set;
   let childOb = observe(val);
-  Object.definedPrototy(obj, key, {
+  Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
     get: function() {
