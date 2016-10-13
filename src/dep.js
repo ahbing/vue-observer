@@ -1,6 +1,6 @@
 let uid = 0;
 
-export function Dep() {
+export default function Dep() {
   this.is = ++uid;
   this.subs = [];
 }
@@ -19,7 +19,7 @@ Dep.prototype.depend = function(dep) {
 }
 
 Dep.prototype.notify = function() {
-  for(var i = 0, l = this.subs.length; i < l; i++) {
+  for(let i = 0, l = this.subs.length; i < l; i++) {
     this.subs[i].update();
   }
 }

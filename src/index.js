@@ -3,9 +3,9 @@
  * observer 数组（遍历每个数组值，如果是复杂值继续 observer）
  * observer 对象， 对每个属性调用 definedReactive 方法
  */
-import {isObject, isPlainObject} from './util';
-import { Dep } from './dep';
-import { arrayMethods } from './array';
+import { isObject, isPlainObject } from './util';
+import Dep from './dep';
+import arrayMethods from './array';
 
 export function Observer(obj, options) {
   const dep = new Dep();
@@ -24,13 +24,13 @@ export function Observer(obj, options) {
 
 Observer.prototype.walk = function(obj) {
   let keys = Object.keys(obj);
-  for (var i = 0, l = keys.length; i < l; i++) {
+  for (let i = 0, l = keys.length; i < l; i++) {
     defineReactive(obj, keys[i], obj[keys[i]]);
   }
 }
 
 Observer.prototype.observerArray = function(arr) {
-  for(var i = 0, l = arr.length; i < l; i++) {
+  for(let i = 0, l = arr.length; i < l; i++) {
     observe(arr[i]);
   }
 }

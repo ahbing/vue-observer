@@ -1,5 +1,6 @@
-import {observe} from './index';
-import {Dep} from './dep';
+import { observe } from './index';
+import Dep from './dep';
+let uid = 0;
 export function Watcher(obj, expOrFun, cb, options) { 
   let getter;
   if (typeof expOrFun === 'function') {
@@ -7,6 +8,10 @@ export function Watcher(obj, expOrFun, cb, options) {
   } else {
     console.info('暂只支持 function')
   }
+  if (!obj.__ob__) this.ob = observe(obj);
+  this.uid = ++uid;
+  this.val = obj;
+  this.ob = obj.__ob__;
   this.getter = getter;
   this.cb = cb;
   const value = this.get()
@@ -15,10 +20,15 @@ export function Watcher(obj, expOrFun, cb, options) {
 Watcher.prototype.get = function() {
   Dep.target = this;
   this.getter();
+  this.addDepend();
+}
+
+Watcher.prototype.addDepend = function() {
+  // @todo 添加是否存在的验证
+  this.ob.dep.add(this);
 }
 
 Watcher.prototype.update = function() {
-  console.log('watcher update')
   this.run();
 }
 
