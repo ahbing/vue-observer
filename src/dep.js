@@ -1,12 +1,12 @@
 let uid = 0;
 
 export default function Dep() {
-  this.is = ++uid;
+  this.id = ++uid;
   this.subs = [];
 }
 
-Dep.prototype.add = function() {
-  this.subs.push(Dep.target);
+Dep.prototype.add = function(sub) {
+  this.subs.push(sub);
 }
 
 Dep.prototype.remove = function(sub) {
@@ -14,8 +14,10 @@ Dep.prototype.remove = function(sub) {
   return this.subs.splice(index, 1);
 }
 
-Dep.prototype.depend = function(dep) {
-  Dep.target.addDepend(dep); 
+Dep.prototype.depend = function() {
+  if (Dep.target) {
+    Dep.target.addDepend(this);
+  }
 }
 
 Dep.prototype.notify = function() {

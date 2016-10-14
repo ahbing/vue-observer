@@ -1,7 +1,7 @@
 /**
- * observer 一个 对象/数组 先对其类型做判断
- * observer 数组（遍历每个数组值，如果是复杂值继续 observer）
- * observer 对象， 对每个属性调用 definedReactive 方法
+ * observe 一个 对象/数组 先对其类型做判断
+ * observe 数组（遍历每个数组值，如果是复杂值继续 observe）
+ * observe 对象， 对每个属性调用 definedReactive 方法
  */
 import { isObject, isPlainObject } from './util';
 import Dep from './dep';
@@ -44,12 +44,6 @@ export function observe(val) {
   return ob;
 }
 
-const reactiveDescriptor = {
-  configurable: true,
-  enumberable: true,
-  writable: true,
-}
-
 export function defineReactive(obj, key, val) {
   const desc = Object.getOwnPropertyDescriptor(obj, key);
   if (desc && desc.configurable === false) return;
@@ -63,13 +57,14 @@ export function defineReactive(obj, key, val) {
     get: function() {
       const value = getter ? getter.call(obj) : val; 
       if (Dep.target) {
-        dep.add(Dep.target);
-        if (childOb) childOb.dep.add();
-      }
-      if (Array.isArray(value)) {
-        for (let i = 0, l = value.length; i < l; i++) {
-          let e = value[i];
-          e && e.__ob__ && e.__ob__.dep.depend();
+        dep.depend()
+        if (childOb) childOb.dep.depend();
+
+        if (Array.isArray(value)) {
+          for (let i = 0, l = value.length; i < l; i++) {
+            let e = value[i];
+            e && e.__ob__ && e.__ob__.dep.depend();
+          }
         }
       }
       return value;
