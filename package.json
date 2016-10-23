@@ -4,16 +4,24 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --config webpack.config.js -d --watch"
+    "build": "webpack --config webpack.config.js -p",
+    "dev": "webpack --config webpack.config.js -d --watch",
+    "test": "NODE_ENV=test mocha --compilers js:babel-core/register --recursive test/ --bail",
+    "test:watch": "npm test -- --watch",
+    "test:cov": "babel-node ./node_modules/.bin/isparta cover _mocha"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "ahbing",
+  "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.16.0",
     "babel-loader": "^6.2.5",
     "babel-preset-es2015": "^6.16.0",
     "babel-preset-latest": "^6.16.0",
+    "chai": "^3.5.0",
+    "isparta": "^4.0.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.1.2",
+    "sinon": "^1.17.6",
     "webpack": "^1.13.2"
   }
 }
