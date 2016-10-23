@@ -36,8 +36,10 @@ Observer.prototype.observerArray = function(arr) {
 }
 export function observe(val) {
   if (!isObject(val)) return;
-  if (val.hasOwnProperty('__ob__') && val.__ob__ instanceof Observer) return val.__ob__;
   let ob;
+  if (Object.prototype.hasOwnProperty.call(val, '__ob__') && val.__ob__ instanceof Observer) 
+    return ob = val.__ob__;
+  // Object.isExtensible(Object.freeze(val)) => false 
   if (Array.isArray(val) || isPlainObject(val) && Object.isExtensible(val)) {
     ob = new Observer(val);
   }
