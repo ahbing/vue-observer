@@ -61,7 +61,7 @@ export function defineReactive(obj, key, val) {
       if (Dep.target) {
         dep.depend()
         if (childOb) childOb.dep.depend();
-
+        // { a: [{}, {}] }
         if (Array.isArray(value)) {
           for (let i = 0, l = value.length; i < l; i++) {
             let e = value[i];

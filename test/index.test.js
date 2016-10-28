@@ -66,6 +66,8 @@ describe('#Observer', function() {
     expect(getCount).to.equal(1);
     obj.a
     expect(getCount).to.equal(2);
+    obj.a = 0;
+    expect(val).to.equal(0);
     obj.a = 20;
     expect(val).to.equal(20);
 
@@ -133,6 +135,8 @@ describe('#Observer', function() {
     expect(obj.__ob__).to.be.ob1;
   });
 
+
+
   it('create on array', function() {
     const arr = [{}, {}];
     const ob1 = observe(arr);
@@ -142,8 +146,8 @@ describe('#Observer', function() {
     
     expect(arr[0].__ob__ instanceof Observer).to.be.true;
     expect(arr[1].__ob__ instanceof Observer).to.be.true;
-
   });
+
   it('observing object prop change', function() {
     const obj = { a: { b: 2 } };
     let updateSpy = sinon.spy();
@@ -160,7 +164,7 @@ describe('#Observer', function() {
     Dep.target = watcher;
     // obj.a; watcher.deps.length === 2   // obj.a + (childOb = observe({b: 2}))
     obj.a.b
-    expect(watcher.deps.length).to.equal(3); // obj.a + a.b + b
+    expect(watcher.deps.length).to.equal(3); // obj.a 2 + a.b 1
     Dep.target = null;
     obj.a.b = 3;
     expect(updateSpy.calledOnce).to.be.true;
@@ -203,6 +207,30 @@ describe('#Observer', function() {
     expect(obj.val).to.equal(3);
     obj.val = 5;
     expect(obj.a).to.equal(5);
+  });
+
+  it('create on object with a deep array', function() {
+    const obj = { a: [{ b: 'b' }] };
+    const ob1 = observe(obj);
+
+    let updateSpy = sinon.spy();
+    // mock watcher
+    const watcher = {
+      deps: [],
+      addDepend(dep) {
+        this.deps.push(dep);
+        dep.add(this);
+      },
+      update: updateSpy
+    };
+    Dep.target = watcher;
+    obj.a[0].b;
+    expect(watcher.deps.length).to.equal(4);
+    Dep.target = null;
+    obj.a[0].b = 'bb';
+    expect(updateSpy.calledOnce).to.be.true;
+    obj.a[0].b = 'bbb';
+    expect(updateSpy.calledTwice).to.be.true;
   });
 
   it('observing array mutation', function() {

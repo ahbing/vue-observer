@@ -51,15 +51,17 @@ Watcher.prototype.get = function() {
 
 Watcher.prototype.addDepend = function(dep) {
   if (!this.depIds[dep.id]) {
+    this.depIds[dep.id] = true;
+    this.deps.push(dep);
     dep.add(this);
   }
 }
 
-Watcher.prototype.depend = function() {
-  for (let i = 0, len = this.deps.length; i < len; i++) {
-    this.addDepend(this.deps[i]);
-  }
-}
+// Watcher.prototype.depend = function() {
+//   for (let i = 0, len = this.deps.length; i < len; i++) {
+//     this.addDepend(this.deps[i]);
+//   }
+// }
 
 Watcher.prototype.remove = function() {
   if (this.active) {
@@ -88,6 +90,7 @@ Watcher.prototype.run = function() {
       try {
         this.cb.call(this.val, oldValue, value);
       } catch(e) {
+        /* istanbul ignore next */
         console.error(e);
       }
     } 

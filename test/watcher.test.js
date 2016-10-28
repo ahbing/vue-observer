@@ -59,7 +59,7 @@ describe('#Watcher object', function() {
     const watcher = new Watcher(obObj, 'a + b.c', cb);
     expect(watcher).to.be.an('error');
   });
-  it('remove watcher', function() {
+  it('remove watcher', function(done) {
     const watcher = new Watcher(obObj, function() {
       return this.a + this.b.c;
     }, cb);
@@ -67,7 +67,10 @@ describe('#Watcher object', function() {
     watcher.remove();
     expect(watcher.active).to.be.false;
     obObj.a = 2;
-    expect(watcher.value).to.equal(3);
+    setTimeout(function() {
+      expect(watcher.value).to.equal(3);
+      done();
+    }, 0)
   });
 });
 
