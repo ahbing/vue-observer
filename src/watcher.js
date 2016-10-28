@@ -7,16 +7,18 @@ let uid = 0;
 export function Watcher(obj, expOrFun, cb, options={}) { 
   let getter;
   if (typeof expOrFun === 'function') {
-    getter = expOrFun.bind(obj);
+    let that = obj && obj.value ? obj.value : obj;
+    getter = expOrFun.bind(that);
   } else {
-    console.info('暂只支持 function')
+    // console.info('暂只支持 function')
+    return new Error(expOrFun + 'is not a function');
   }
-  if (!obj.__ob__) this.ob = observe(obj);
+  // 如果数据没有被 observe
+  this.ob = obj.__ob__ ? obj.__ob__ : observe(obj);
   this.active = true;
   this.sync = !!options.sync;
   this.id = ++uid;
   this.val = obj;
-  this.ob = obj.__ob__;
   this.getter = getter;
   this.deps = [];
   this.newDeps = [];
@@ -69,16 +71,24 @@ Watcher.prototype.depend = function() {
   }
 }
 
-Watcher.prototype.update = function() {
-  if (this.sync) {
-    // 同步更新
-    this.run();
-  } else {
-    // 添加到队列
-    console.log('添加到队列');
-    queueWatcher(this);
+Watcher.prototype.remove = function() {
+  let i = this.deps.length;
+  while (i--) {
+    this.deps[i].remove(this);
   }
-  // this.run(); 
+  this.newDeps.length = 0;
+  this.deps.length = 0;
+  this.newDepIds = {};
+  this.depIds = {};
+  this.active = false;
+}
+
+Watcher.prototype.update = function() {
+  if (this.sync) { // 同步更新
+    return this.run();
+  }
+  // console.log('添加到队列');
+  queueWatcher(this); 
 }
 
 Watcher.prototype.run = function() {

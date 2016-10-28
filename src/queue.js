@@ -7,7 +7,7 @@ const nextTick = (function() {
   let timerFunc;
   let callbacks = [];
   let pending = false;
-  // 还有一种就是使用 promise；
+  // 还有一种就是使用 promise;
   timerFunc = setTimeout;
   function nextTickHandler() {
     pending = false;
