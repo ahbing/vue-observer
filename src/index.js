@@ -7,7 +7,7 @@ import { isObject, isPlainObject } from './util';
 import Dep from './dep';
 import arrayMethods from './array';
 
-export function Observer(obj, options) {
+export function Observer(obj) {
   const dep = new Dep();
   this.dep = dep;
   this.value = obj;

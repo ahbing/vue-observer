@@ -21,66 +21,54 @@ export function Watcher(obj, expOrFun, cb, options={}) {
   this.val = obj;
   this.getter = getter;
   this.deps = [];
-  this.newDeps = [];
   this.depIds = {};
-  this.newDepIds = {};
   this.cb = cb;
-  this.addDepend(this.ob.dep); // init dep
-  this.value = this.get()
+  this.initDep(this.val);
+  this.value = this.get();
 }
+
+Watcher.prototype.initDep = function(self) {
+  this.addDepend(this.ob.dep); // init self dep
+  if (Array.isArray(self)) {
+    let i = self.length;
+    while (i--) {
+      let child = self[i];
+      let childDep = child.__ob__ && child.__ob__.dep;
+      if (childDep && Array.isArray(child)) {
+        this.addDepend(childDep);
+        return this.initDep(child);
+      }
+    }
+  }
+};
 
 Watcher.prototype.get = function() {
   Dep.target = this;
   const value = this.getter();
   Dep.target = null;
-  this.updateDepend()
   return value;
 }
 
 Watcher.prototype.addDepend = function(dep) {
-  if (!this.newDepIds[dep.id]) {
-    this.newDepIds[dep.id] = true;
-    this.newDeps.push(dep);
-    if (!this.depIds[dep.id]) {
-      dep.add(this);
-    }
+  if (!this.depIds[dep.id]) {
+    dep.add(this);
   }
-}
-
-Watcher.prototype.updateDepend = function() {
-  let i = this.deps.length;
-  while (i--) {
-    let dep = this.deps[i];
-    if (!this.newDepIds[dep.id]) {
-      dep.remove(this);
-    }
-  }
-  let tmp = this.deps;
-  this.deps = this.newDeps;
-  this.newDeps = tmp;
-  this.newDeps.length = 0;
-  tmp = this.depIds;
-  this.depIds = this.newDepIds;
-  this.newDepIds = tmp;
-  this.newDepIds = {};
 }
 
 Watcher.prototype.depend = function() {
   for (let i = 0, len = this.deps.length; i < len; i++) {
-    this.deps[i].depend();
+    this.addDepend(this.deps[i]);
   }
 }
 
 Watcher.prototype.remove = function() {
-  let i = this.deps.length;
-  while (i--) {
-    this.deps[i].remove(this);
+  if (this.active) {
+    let i = this.deps.length;
+    while (i--) {
+      this.deps[i].remove(this);
+    }
+    this.active = false;
   }
-  this.newDeps.length = 0;
-  this.deps.length = 0;
-  this.newDepIds = {};
-  this.depIds = {};
-  this.active = false;
 }
 
 Watcher.prototype.update = function() {
