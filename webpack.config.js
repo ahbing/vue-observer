@@ -1,14 +1,16 @@
+var path = require('path');
+
 module.exports = {
-  entry: './index.js',
+  entry: './example.js',
   output: {
-    path: './',
-    filename: 'observer.js',
+    path: __dirname,
+    filename: 'bundle.js',
   },
   module: {
     loaders: [{
       test: /\.js$/,
-      exclude: /node_modules/,
-      loader: 'babel-loader'
+      loader: 'babel-loader',
+      exclude: /node_modules/
     }]
   }
 }
