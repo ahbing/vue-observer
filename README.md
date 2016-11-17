@@ -1,5 +1,8 @@
 # Vue-observer
-
+[![Build Status](https://travis-ci.org/ahbing/vue-observer.svg?branch=master)](https://travis-ci.org/ahbing/vue-observer)
+[![NPM version](https://img.shields.io/npm/v/vue-observer.svg?style=flat)](https://www.npmjs.com/package/vue-observer)
+[![Coverage Status](https://coveralls.io/repos/github/ahbing/vue-observer/badge.svg?branch=master)](https://coveralls.io/github/ahbing/vue-observer?branch=master)
+![David DM](https://david-dm.org/ahbing/vue-observer.svg)
 
 ## example
 

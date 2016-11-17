@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": ">=6.0.0",
+    "npm": "3.7.x"
+  },
   "scripts": {
     "build": "webpack --config webpack.config.js -p",
     "dev": "webpack --config webpack.config.js -d --watch",
@@ -18,9 +22,11 @@
     "babel-preset-es2015": "^6.16.0",
     "babel-preset-latest": "^6.16.0",
     "chai": "^3.5.0",
+    "coveralls": "^2.11.15",
     "isparta": "^4.0.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.1.2",
+    "mocha-lcov-reporter": "^1.2.0",
     "sinon": "^1.17.6",
     "webpack": "^1.13.2"
   }
